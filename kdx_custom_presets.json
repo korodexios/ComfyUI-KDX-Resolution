@@ -1,0 +1,13 @@
+{
+  "_comment": "Example custom preset lists (keys starting with _ are ignored). Put YOUR lists in kdx_custom_presets.local.json (same format, not tracked by git, so git pull never conflicts). Press R in ComfyUI to reload - no restart needed.",
+  "_example_SDXL_Custom": {
+    "based_on": "SDXL",
+    "include_base": true,
+    "multiple_of": 16,
+    "presets": ["1920x1080", "1080x1920", [1024, 1536]]
+  },
+  "_example_My_Video": {
+    "multiple_of": 32,
+    "presets": ["1280x736", "1920x1088"]
+  }
+}
