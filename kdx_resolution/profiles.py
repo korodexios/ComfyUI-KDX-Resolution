@@ -188,29 +188,32 @@ MODEL_PROFILES = {
     "Krea 2 (turbo/raw)": {
         "kind": "image",
         "family": "krea",
-        "verified": False,
-        "source": "https://github.com/krea-ai/krea-2",
-        "base_resolution": 2048,
+        "verified": True,
+        "source": "https://docs.krea.ai/user-guide/features/krea-2-turbo",
+        "base_resolution": 1024,
         "multiple_of": 16,
         "min_dim": 512,
         "max_dim": 4096,
-        "recommended_mp": 4.0,
+        "recommended_mp": 1.0,
         "max_mp": 4.0,
-        "note": ("official: 1024-2048 px, multiples of 16, Turbo recommends 2048x2048 (Raw ~1K); "
-                 "no size table published - 2K sizes computed for Krea's API ratios"),
+        "note": ("official Krea 2 Turbo table (~1 MP, Krea calls 7:3 '2.35:1'); "
+                 "1024-2048 px on a /16 grid, 2K sizes kept as extra buckets"),
         "native_resolutions": {
-            "1:1": (2048, 2048),
-            "4:3": (2368, 1776),
-            "3:4": (1776, 2368),
-            "3:2": (2496, 1664),
-            "2:3": (1664, 2496),
-            "16:9": (2816, 1584),
-            "9:16": (1584, 2816),
-            "4:5": (1856, 2320),
-            "47:20": (3008, 1280),
+            "1:1": (1024, 1024),
+            "4:3": (1184, 896),
+            "3:2": (1248, 832),
+            "16:9": (1376, 768),
+            "7:3": (1568, 672),
+            "4:5": (928, 1152),
+            "2:3": (832, 1248),
+            "9:16": (768, 1376),
         },
         "concrete_buckets": [
-            [1024, 1024], [1152, 864], [864, 1152], [1248, 832], [832, 1248], [1280, 720], [720, 1280],
+            # mirrors Krea does not list (3:4, 5:4, 3:7)
+            [896, 1184], [1152, 928], [672, 1568],
+            # 2K tier (Turbo also works at 2048x2048)
+            [2048, 2048], [2368, 1776], [1776, 2368], [2496, 1664], [1664, 2496],
+            [2816, 1584], [1584, 2816], [1856, 2320],
         ],
     },
     "FLUX 3 Image Klein": {

@@ -33,7 +33,7 @@ Flux-2 / Z-Image are capped at their 4 MP maximum. Bigger images are better made
 | SDXL | image | /16 | 1 | 1024×1024, 1152×896, 896×1152, 1216×832, 832×1216, 1344×768, 768×1344, 1536×640, 640×1536 |  | [official](https://arxiv.org/abs/2307.01952) |
 | SD 1.5 | image | /8 | 0.25 | 512×512, 576×448, 448×576, 608×400, 400×608, 672×384, 384×672 |  | community |
 | Z-Image (turbo/base) | image | /16 | 1 | 1024×1024, 1152×864, 864×1152, 1248×832, 832×1248, 1280×720, 720×1280, 1344×576, 576×1344, 1152×896, 896×1152 |  | [official](https://www.alibabacloud.com/help/en/model-studio/z-image-api-reference) |
-| Krea 2 (turbo/raw) | image | /16 | 4 | 2048×2048, 2368×1776, 1776×2368, 2496×1664, 1664×2496, 2816×1584, 1584×2816, 1856×2320, 3008×1280 |  | community ([info](https://github.com/krea-ai/krea-2)) |
+| Krea 2 (turbo/raw) | image | /16 | 1 | 1024×1024, 1184×896, 1248×832, 1376×768, 1568×672, 928×1152, 832×1248, 768×1376 |  | [official](https://docs.krea.ai/user-guide/features/krea-2-turbo) |
 | FLUX 3 Image Klein | image | /16 | 1 | 1024×1024, 1152×896, 896×1152, 1216×832, 832×1216, 1344×768, 768×1344 |  | community ([info](https://docs.bfl.ai/flux_3/flux3_image_klein)) |
 | MiniMax H3 Image | image | /32 | 16 | 4096×4096, 4736×3552, 3552×4736, 5024×3360, 3360×5024, 5472×3072, 3072×5472, 6272×2688 |  | [official](https://github.com/MiniMax-AI/MiniMax-H3-Image) |
 | SD 3.5 Large | image | /64 | 1 | 1024×1024, 1152×896, 896×1152, 1216×832, 832×1216, 1344×768, 768×1344 |  | community ([info](https://huggingface.co/stabilityai/stable-diffusion-3.5-large)) |

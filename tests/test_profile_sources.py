@@ -122,7 +122,9 @@ class TestModelListInput(unittest.TestCase):
                            ("LTX 2.5", "video"), ("HunyuanVideo 1.5", "video"),
                            ("MOVA (OpenMOSS, video+audio)", "video")):
             self.assertEqual(MODEL_PROFILES[name]["kind"], kind)
-        self.assertEqual(core("1:1", "Krea 2 (turbo/raw)", 0)[:2], (2048, 2048))
+        self.assertEqual(core("1:1", "Krea 2 (turbo/raw)", 0)[:2], (1024, 1024))
+        self.assertEqual(core("16:9", "Krea 2 (turbo/raw)", 0)[:2], (1376, 768))
+        self.assertEqual(core("21:9", "Krea 2 (turbo/raw)", 0)[:2], (1568, 672))
         self.assertEqual(core("16:9", "MOVA (OpenMOSS, video+audio)", 0)[:2], (1280, 720))
         self.assertEqual(core("16:9", "LTX 2.5", 0)[:2], (1920, 1088))
 

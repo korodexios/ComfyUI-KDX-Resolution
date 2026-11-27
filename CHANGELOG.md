@@ -1,5 +1,13 @@
 # Changelog
 
+## 0.6.6 - 2026-11-27
+
+### Changed
+- **Krea 2 (turbo/raw)** now uses Krea's official Krea 2 Turbo size table (~1 MP): 1:1 1024×1024,
+  4:3 1184×896, 3:2 1248×832, 16:9 1376×768, 7:3 ("2.35:1") 1568×672, 4:5 928×1152, 2:3 832×1248,
+  9:16 768×1376. The profile is marked official, ~MP is 1. The earlier computed 2K sizes and the
+  unlisted mirrors (3:4, 5:4, 3:7) stay available as extra buckets.
+
 ## 0.6.5 - 2026-11-26
 
 ### Added
