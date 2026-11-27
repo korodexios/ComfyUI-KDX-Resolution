@@ -1,5 +1,10 @@
 # Changelog
 
+## 0.6.8 - 2026-11-27
+
+### Changed
+- The result box says "your sizes (based on <model>)" for a my profile instead of "community sizes".
+
 ## 0.6.7 - 2026-11-27
 
 ### Added

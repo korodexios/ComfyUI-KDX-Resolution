@@ -87,6 +87,8 @@ class TestStore(MyProfilesCase):
         self.assertEqual(reg[name][0], (1024, 1024))
         self.assertEqual(grids[name], 16)
         self.assertIn(f"{name} | ~16:9 | 1376x768", KDX_Preset_Picker.INPUT_TYPES()["required"]["preset"][0])
+        from kdx_resolution.summary import profile_line
+        self.assertIn("your sizes (based on Krea 2 (turbo/raw))", profile_line(name))
         summary = {p["name"]: p for p in profile_summary()}
         self.assertTrue(summary[name]["custom"])
         self.assertEqual(summary[name]["kind"], "image")

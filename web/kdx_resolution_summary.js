@@ -1,7 +1,7 @@
 import { app } from "../../scripts/app.js";
 import { api } from "../../scripts/api.js";
 import { ComfyWidgets } from "../../scripts/widgets.js";
-import { ensureTheme } from "./kdx_resolution/theme.mjs?v=0.6.7";
+import { ensureTheme } from "./kdx_resolution/theme.mjs?v=0.6.8";
 
 // A read-only text box at the bottom of every KDX-Resolution node that says
 // which size the node gives and why (native table, custom table, lattice,

@@ -1,6 +1,6 @@
 import { app } from "../../scripts/app.js";
 import { api } from "../../scripts/api.js";
-import { openMyProfiles } from "./kdx_resolution/my_profiles.mjs?v=0.6.7";
+import { openMyProfiles } from "./kdx_resolution/my_profiles.mjs?v=0.6.8";
 
 // Settings -> "KDX Resolution": choose which model profiles appear in the
 // model dropdowns of the KDX-Resolution nodes (AutoRes Core, Nearest Native

@@ -7,7 +7,7 @@
 // Opened from the right-click menu of any KDX Resolution node and from
 // Extensions -> KDX Resolution in the top menu.
 
-import { ensureTheme } from "./theme.mjs?v=0.6.7";
+import { ensureTheme } from "./theme.mjs?v=0.6.8";
 
 const CSS = `
 .kdxr-mp-back{position:fixed;inset:0;background:rgba(0,0,0,.55);z-index:10000;display:flex;

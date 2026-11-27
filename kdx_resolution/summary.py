@@ -22,7 +22,9 @@ def profile_line(name) -> str:
     parts = [f"{name}: grid /{prof['multiple_of']}", f"sides {prof['min_dim']}–{prof['max_dim']} px"]
     if prof.get("recommended_mp"):
         parts.append(f"trained ~{prof['recommended_mp']:g} MP")
-    if not prof.get("verified"):
+    if prof.get("custom"):
+        parts.append(f"your sizes (based on {prof.get('based_on')})")
+    elif not prof.get("verified"):
         parts.append("community sizes")
     return "ℹ " + ", ".join(parts)
 
