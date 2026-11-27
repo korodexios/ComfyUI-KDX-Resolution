@@ -1,5 +1,18 @@
 # Changelog
 
+## 0.6.7 - 2026-11-27
+
+### Added
+- **My model profiles**: a built-in profile with your own size table (grid, size limits and ~MP stay
+  the model's). Make them in a small editor (right-click a KDX Resolution node → *KDX: ★ my model
+  profiles…*, or Extensions → KDX Resolution): one size per line (`16:9 = 1376x768` or `1376x768`),
+  checked live with errors per line. They appear in every model dropdown as `★ <name>` right after
+  saving. Stored in `<user dir>/kdx_resolution/my_profiles.json`; a rename keeps old workflows working.
+
+### Fixed
+- Model and preset dropdowns lost new entries after a node-definition refresh (R) when the model
+  filter had run on them before.
+
 ## 0.6.6 - 2026-11-27
 
 ### Changed

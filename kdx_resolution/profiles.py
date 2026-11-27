@@ -637,15 +637,30 @@ PROFILE_ALIASES = {
 }
 
 
+def _mine():
+    """My profiles ({dropdown name: profile}) and their rename aliases; empty outside ComfyUI."""
+    from . import my_profiles  # late import: my_profiles imports this module
+    return my_profiles.profiles(), my_profiles.aliases()
+
+
+def all_profiles() -> dict:
+    """Built-in profiles followed by my profiles (``★ <name>``)."""
+    mine, _ = _mine()
+    return {**MODEL_PROFILES, **mine}
+
+
 def resolve_profile_name(model_profile) -> str:
-    """Map an old (aliased) profile name to its current name; unknown names pass through."""
+    """Map an old (aliased or renamed) profile name to its current name; unknown names pass through."""
     name = str(model_profile or "")
-    return PROFILE_ALIASES.get(name, name)
+    if name in PROFILE_ALIASES:
+        return PROFILE_ALIASES[name]
+    _, renamed = _mine()
+    return renamed.get(name, name)
 
 
 def profile_names(include_hidden: bool = True) -> list:
-    """Profile names for a dropdown, in table order."""
-    return [k for k, v in MODEL_PROFILES.items() if include_hidden or not v.get("hidden", False)]
+    """Profile names for a dropdown, in table order; my profiles come last."""
+    return [k for k, v in all_profiles().items() if include_hidden or not v.get("hidden", False)]
 
 
 def validate_profile_name(model_profile, allow=()):
@@ -654,21 +669,27 @@ def validate_profile_name(model_profile, allow=()):
     Accepts current names, old aliases and the extra values in ``allow`` (e.g. "auto").
     A linked input (value not known at validation time) is accepted.
     """
-    if model_profile is None or model_profile in allow or resolve_profile_name(model_profile) in MODEL_PROFILES:
+    profiles = all_profiles()
+    if model_profile is None or model_profile in allow or resolve_profile_name(model_profile) in profiles:
         return True
-    return f"Unknown model_profile '{model_profile}'. Valid: {', '.join(list(MODEL_PROFILES) + list(allow))}"
+    if str(model_profile).startswith("★ "):
+        return (f"Unknown model_profile '{model_profile}': this my profile does not exist on this machine. "
+                "Create it again (right-click a KDX Resolution node -> KDX: my model profiles) "
+                "or pick another model.")
+    return f"Unknown model_profile '{model_profile}'. Valid: {', '.join(list(profiles) + list(allow))}"
 
 
 def _profile(model_profile: str) -> dict:
     """Return the profile dict for a model name (old aliases accepted), or None if unknown."""
-    return MODEL_PROFILES.get(resolve_profile_name(model_profile))
+    return all_profiles().get(resolve_profile_name(model_profile))
 
 
 def profile_summary() -> list:
     """Public, JSON-safe profile overview for the web UI (Settings -> KDX Resolution)."""
     out = []
-    for name, p in MODEL_PROFILES.items():
+    for name, p in all_profiles().items():
         out.append({
+            "custom": bool(p.get("custom")),
             "name": name,
             "kind": p.get("kind", "image"),
             "verified": bool(p.get("verified")),

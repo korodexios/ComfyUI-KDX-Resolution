@@ -59,6 +59,38 @@ Flux-2 / Z-Image are capped at their 4 MP maximum. Bigger images are better made
 Older profile names keep working in saved workflows (`Z-Image (turbop/base)` → `Z-Image (turbo/base)`,
 `Qwen-Image (2.0/edit)` → `Qwen-Image (2512/edit)`).
 
+## My model profiles
+
+A **my profile** is a built-in profile with your own size table: it keeps the model's grid, size
+limits and ~MP, and uses only the sizes you list. It shows up in **every** model dropdown (AutoRes
+Core, Preset Picker, Nearest Native Preset, Resolution Step) as `★ <name>`, after the built-in ones.
+
+1. Right-click any KDX Resolution node → **KDX: ★ my model profiles…** (or top menu
+   **Extensions → KDX Resolution**).
+2. **New profile**: give it a name and pick the model it is **based on**. The box fills with that
+   model's sizes; edit them, one per line:
+
+   ```text
+   1:1  = 1024x1024
+   16:9 = 1376x768
+   2.35:1 = 1568x672     # decimal ratio: the ratio comes from the size (7:3)
+   1184x896              # no ratio: the nearest common one is used (4:3)
+   ```
+
+3. The table next to the box shows what was understood; errors name the line and the fix (a size
+   off the model's grid suggests the nearest size on it). **Save** (Ctrl+S) puts the profile into the
+   dropdowns of all open nodes right away; no restart and no R needed.
+
+How the nodes use it: AutoRes Core with `target_megapixels = 0` returns your size for that ratio; a
+ratio you did not list gets the nearest of **your** sizes; with `target_megapixels > 0` the size is
+computed on the base model's grid as usual.
+
+- Stored in `<ComfyUI user dir>/kdx_resolution/my_profiles.json` (default `ComfyUI/user/`), outside
+  the node pack, so `git pull` never touches it. Copy that file to use the profiles on another machine.
+- **Renaming** keeps the old name working in saved workflows. **Deleting** does not: such a workflow
+  says the profile does not exist on this machine and asks you to pick another model.
+- A workflow stores only the profile's name. Someone without your file has to create the profile too.
+
 ## Your own preset lists
 
 The 📑 Preset Picker lists every model's native sizes and extra buckets, plus your own lists.

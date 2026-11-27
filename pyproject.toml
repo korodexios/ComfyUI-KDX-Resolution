@@ -1,6 +1,6 @@
 [project]
 name = "comfyui-kdx-resolution"
-version = "0.6.6"
+version = "0.6.7"
 description = "Headless ComfyUI resolution toolkit: aspect-ratio extraction, model-aware native presets and an exact-AR lattice solver (stdlib only)"
 readme = "README.md"
 license = { file = "LICENSE" }

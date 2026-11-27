@@ -1,5 +1,6 @@
 import { app } from "../../scripts/app.js";
 import { api } from "../../scripts/api.js";
+import { openMyProfiles } from "./kdx_resolution/my_profiles.mjs?v=0.6.7";
 
 // Settings -> "KDX Resolution": choose which model profiles appear in the
 // model dropdowns of the KDX-Resolution nodes (AutoRes Core, Nearest Native
@@ -15,13 +16,17 @@ const MODEL_WIDGETS = { model_profile: true, model: true };
 const ALWAYS_SHOWN = new Set(["auto"]);
 
 let PROFILES = [];
-try {
-  const res = await api.fetchApi("/kdx_resolution/profiles");
-  if (res.ok) PROFILES = (await res.json()).profiles || [];
-} catch (e) {
-  console.warn("[KDX-Resolution] model list unavailable, settings disabled", e);
+let BY_NAME = new Map();
+async function loadProfiles() {
+  try {
+    const res = await api.fetchApi("/kdx_resolution/profiles");
+    if (res.ok) PROFILES = (await res.json()).profiles || [];
+  } catch (e) {
+    console.warn("[KDX-Resolution] model list unavailable, settings disabled", e);
+  }
+  BY_NAME = new Map(PROFILES.map((p) => [p.name, p]));
 }
-const BY_NAME = new Map(PROFILES.map((p) => [p.name, p]));
+await loadProfiles();
 
 const modelId = (name) => "KDX.Resolution.Model." + name.replace(/[^A-Za-z0-9]+/g, "_");
 
@@ -41,6 +46,7 @@ function isVisible(name, nodeKind) {
   const p = BY_NAME.get(name);
   if (!p) return true; // "auto", custom preset lists, unknown values
   if (nodeKind && p.kind !== nodeKind) return false;
+  if (p.custom) return true; // my profiles: always listed (only the node's image/video filter applies)
   const kinds = getSetting(KINDS_ID, KIND_OPTIONS[0]);
   if (kinds === "image only" && p.kind !== "image") return false;
   if (kinds === "video only" && p.kind !== "video") return false;
@@ -54,7 +60,8 @@ function filterNode(node, pickFirst = false) {
   const nodeKind = NODE_LIST_KIND[node.widgets?.find((w) => w.name === "model_list")?.value];
   for (const w of node.widgets || []) {
     if (!MODEL_WIDGETS[w.name] || !Array.isArray(w.options?.values)) continue;
-    if (!w._kdxAllValues) w._kdxAllValues = [...w.options.values];
+    // A refresh (R, or a my-profiles save) replaces the list: start again from the new one.
+    if (!w._kdxAllValues || w.options.values !== w._kdxShown) w._kdxAllValues = [...w.options.values];
     const shown = w._kdxAllValues.filter((v) => ALWAYS_SHOWN.has(v) || isVisible(v, nodeKind));
     if (pickFirst && shown.length && !shown.includes(w.value)) {
       w.value = shown.find((v) => !ALWAYS_SHOWN.has(v)) ?? shown[0];
@@ -65,6 +72,7 @@ function filterNode(node, pickFirst = false) {
       shown.unshift(w.value);
     }
     w.options.values = shown.length ? shown : [...w._kdxAllValues];
+    w._kdxShown = w.options.values;
   }
   node.setDirtyCanvas?.(true, true);
 }
@@ -95,6 +103,32 @@ function refilterAll() {
   nodes.forEach(filterNode);
 }
 
+// My profiles changed (this tab or another one): reload the model lists of every node.
+let refreshing = null;
+async function profilesChanged() {
+  if (refreshing) return refreshing;
+  refreshing = (async () => {
+    await loadProfiles();
+    try {
+      if (app.refreshComboInNodes) await app.refreshComboInNodes();
+      else await app.extensionManager?.command?.execute?.("Comfy.RefreshNodeDefinitions");
+    } catch (e) {
+      console.warn("[KDX-Resolution] could not refresh the model lists (press R)", e);
+    }
+    refilterAll();
+    const nodes = app.graph?._nodes || app.graph?.nodes || [];
+    for (const n of nodes) n._kdxApplyFilter?.(false); // Preset Picker
+  })().finally(() => { refreshing = null; });
+  return refreshing;
+}
+api.addEventListener("kdx_resolution.profiles_changed", () => profilesChanged());
+
+const MY_PROFILES_CMD = "KDX.Resolution.MyProfiles";
+function showMyProfiles(node) {
+  const model = node?.widgets?.find((w) => MODEL_WIDGETS[w.name])?.value;
+  openMyProfiles({ api, onChanged: profilesChanged, select: model });
+}
+
 const settings = [];
 if (PROFILES.length) {
   settings.push({
@@ -107,7 +141,7 @@ if (PROFILES.length) {
     tooltip: "Quick filter for all KDX-Resolution model dropdowns.",
     onChange: () => refilterAll(),
   });
-  for (const p of PROFILES) {
+  for (const p of PROFILES.filter((x) => !x.custom)) {
     const flags = [p.kind, p.verified ? "official sizes" : "community sizes"];
     if (p.recommended_mp) flags.push(`~${p.recommended_mp} MP`);
     settings.push({
@@ -125,6 +159,8 @@ if (PROFILES.length) {
 app.registerExtension({
   name: "KDX.ResolutionSettings",
   settings,
+  commands: [{ id: MY_PROFILES_CMD, label: "KDX Resolution: my model profiles", function: () => showMyProfiles() }],
+  menuCommands: [{ path: ["Extensions", "KDX Resolution"], commands: [MY_PROFILES_CMD] }],
   async beforeRegisterNodeDef(nodeType, nodeData) {
     if (nodeData?.category !== "KDX/Resolution") return;
     const origMenu = nodeType.prototype.getExtraMenuOptions;
@@ -133,6 +169,9 @@ app.registerExtension({
       options?.push?.({
         content: "KDX: choose visible models… (Settings → KDX Resolution)",
         callback: openSettings,
+      }, {
+        content: "KDX: ★ my model profiles…",
+        callback: () => showMyProfiles(this),
       });
       return r;
     };

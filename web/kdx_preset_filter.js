@@ -10,12 +10,15 @@ app.registerExtension({
     const pw = node.widgets?.find((w) => w.name === "preset");
     if (!mw || !pw) return;
 
-    const all = [...pw.options.values];
+    let all = [...pw.options.values];
+    let shown = null;
 
     const apply = (resetValue) => {
+      // A refresh (R, or a my-profiles save) replaced the list: start from the new one.
+      if (shown && pw.options.values !== shown) all = [...pw.options.values];
       const pref = mw.value + " | ";
       const filtered = all.filter((v) => v.startsWith(pref));
-      pw.options.values = filtered.length ? filtered : all;
+      pw.options.values = shown = filtered.length ? filtered : all;
       if (resetValue && !pw.options.values.includes(pw.value)) {
         pw.value = pw.options.values[0];
       }

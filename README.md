@@ -8,6 +8,8 @@ sizes without breaking the aspect ratio.
 - **28 model profiles** (Qwen-Image, Flux, Flux-2, FLUX 3 Klein, Krea 2, MiniMax H3, SDXL, SD 1.5 / 3.5,
   Z-Image, Wan 2.2, LTX, HunyuanVideo, MOVA, Mochi, CogVideoX, SVD, AnimateDiff …) with native sizes,
   grid and size limits, most checked against the makers' official tables.
+- **My model profiles**: give any model your own size table in a small editor; it appears in every
+  model dropdown as `★ <name>`.
 - **Exact-ratio solver**: computed sizes keep the exact ratio whenever the grid allows it.
 - **Result box** in every node: which size you get and why, updated while you edit.
 - Works with [KDX Wildcard Studio](https://github.com/korodexios/ComfyUI-KDX-Wildcard-Studio) and

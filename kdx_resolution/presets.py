@@ -6,7 +6,8 @@ import math
 import os
 import re
 
-from .profiles import MODEL_PROFILES
+from . import my_profiles
+from .profiles import all_profiles
 
 # Custom lists live in the node pack root (next to the top-level __init__.py).
 _KDX_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
@@ -85,7 +86,7 @@ def _build_registry():
     kdx_custom_presets.local.json (your own lists, not tracked by git).
     """
     reg, grid = {}, {}
-    for name, p in MODEL_PROFILES.items():
+    for name, p in all_profiles().items():
         if p.get("hidden"):
             continue
         pairs = list(p.get("native_resolutions", {}).values())
@@ -123,6 +124,7 @@ def _load_registry():
             stamp.append(os.path.getmtime(path))
         except OSError:
             stamp.append(None)
+    stamp.append(my_profiles._stamp(my_profiles.store_path()))
     stamp = tuple(stamp)
     if _KDX_CACHE["data"] is None or _KDX_CACHE["mtime"] != stamp:
         _KDX_CACHE["data"], _KDX_CACHE["mtime"] = _build_registry(), stamp
